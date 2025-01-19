@@ -7,7 +7,7 @@ import com.hopcape.mobile.auth.api.security.IOSEncryptor
 
 /**
  * A factory class that provides platform-specific implementations of `Encryptor` and `Decryptor`
- * for iOS. It creates instances of `IOSEncryptor` and `IOSDecryptor` for encryption and decryption
+ * for iOS. It creates instances of `IOSEncryptor` and `com.hopcape.mobile.auth.api.security.IOSDecryptor` for encryption and decryption
  * tasks, respectively.
  *
  * This class ensures that the correct platform-specific dependencies are used on iOS devices.
@@ -37,7 +37,7 @@ class IOSPlatformAuthenticationDependencyFactory: PlatformSpecificAuthentication
     }
 
     /**
-     * Creates and returns an instance of `Decryptor` for iOS, specifically `IOSDecryptor`.
+     * Creates and returns an instance of `Decryptor` for iOS, specifically `com.hopcape.mobile.auth.api.security.IOSDecryptor`.
      *
      * @return The platform-specific `Decryptor` instance for iOS.
      */

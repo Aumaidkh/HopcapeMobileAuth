@@ -51,10 +51,13 @@ internal class IOSEncryptor: Encryptor {
      */
     @OptIn(ExperimentalForeignApi::class)
     override fun encrypt(data: DecryptedData): EncryptedData {
+        val byteArray = data.encodeToByteArray()
         // Pin the ByteArray to get a COpaquePointer
-        val encryptedData: NSData = data.usePinned { pinned ->
-            NSData.create(bytes = pinned.addressOf(0), length = data.toULong())
+        val encryptedData: NSData = byteArray.usePinned { pinned ->
+            NSData.create(bytes = pinned.addressOf(0), length = byteArray.size.toULong())
         }
+
+        // Return the base64 encoded string of the encrypted data
         return encryptedData.base64EncodedStringWithOptions(0u)
     }
 }
