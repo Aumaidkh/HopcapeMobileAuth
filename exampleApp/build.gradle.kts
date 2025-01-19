@@ -33,6 +33,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(projects.auth)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -43,6 +44,9 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+        }
+        iosMain.dependencies {
+            implementation(projects.auth)
         }
     }
 }
