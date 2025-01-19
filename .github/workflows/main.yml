@@ -23,7 +23,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lint_report
-          path: onBoardingLibrary/build/reports/lint-results-debug.html
+          path: auth/build/reports/lint-results-debug.html
 
   unit-test:
     runs-on: ubuntu-latest
@@ -39,10 +39,9 @@ jobs:
 
         with:
           name: unit_test_report
-          path: onBoardingLibrary/build/reports/tests/testDebugUnitTest
+          path: auth/build/reports/tests/testDebugUnitTest
 
   publish:
-    if: github.event_name == 'push'
     needs: [unit-test]
     runs-on: ubuntu-latest
     steps:
@@ -83,8 +82,8 @@ jobs:
       - name: Upload Documentation
         uses: actions/upload-artifact@v4
         with:
-          name: onboarding-library-documentation
-          path: onBoardingLibrary/build/documentation/html
+          name: mobile-auth-library-documentation
+          path: auth/build/documentation/html
 
 
 
