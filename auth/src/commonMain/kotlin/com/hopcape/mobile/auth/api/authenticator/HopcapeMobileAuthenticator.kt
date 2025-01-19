@@ -105,7 +105,6 @@ internal class HopcapeMobileAuthenticator(
         if (Authenticator.config == null) {
             throw IllegalStateException("No auth config set. Please make sure to call configure first.")
         }
-
         // If the user is already authenticated, trigger success callback
         if (sessionManager.getCurrentSession() != null) {
             onAuthenticationSuccess()

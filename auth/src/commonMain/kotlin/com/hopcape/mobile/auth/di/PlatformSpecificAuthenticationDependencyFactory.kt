@@ -53,7 +53,11 @@ abstract class PlatformSpecificAuthenticationDependencyFactory : AuthDependencyF
      * @return A [KeyValueStorage] instance that provides secure storage functionality.
      */
     override fun createStorage(): KeyValueStorage {
-        return LocalSettingsStorage(Settings())
+        return SecureStorage(
+            encryptor = createEncryptor(),
+            decryptor = createDecrpytor(),
+            storage = LocalSettingsStorage(Settings())
+        )
     }
 
     /**

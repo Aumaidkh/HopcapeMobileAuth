@@ -1,6 +1,6 @@
 package com.hopcape.mobile.auth.api.security
 
-import java.util.Base64
+import android.util.Base64
 import javax.crypto.Cipher
 import javax.crypto.spec.GCMParameterSpec
 
@@ -43,11 +43,7 @@ internal class AndroidDecryptor: Decryptor {
      */
     override fun decrypt(data: EncryptedData): DecryptedData {
         // Use Android's Base64 class for devices below API level 26
-        val encryptedBytes = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            Base64.getDecoder().decode(data)
-        } else {
-            android.util.Base64.decode(data, android.util.Base64.NO_WRAP)
-        }
+        val encryptedBytes = Base64.decode(data, Base64.NO_WRAP)
 
         // Extract IV and encrypted data
         val iv = encryptedBytes.copyOfRange(0, GCM_IV_LENGTH)
@@ -57,6 +53,9 @@ internal class AndroidDecryptor: Decryptor {
         val cipher = Cipher.getInstance(ALGORITHM).apply {
             init(Cipher.DECRYPT_MODE, getSecretKey(), GCMParameterSpec(TAG_SIZE, iv))
         }
-        return cipher.doFinal(encryptedData).toString()
+
+        // Decrypt and return as DecryptedData
+        val decryptedBytes = cipher.doFinal(encryptedData)
+        return String(decryptedBytes)  // Convert decrypted bytes to a String
     }
 }

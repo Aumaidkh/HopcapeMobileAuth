@@ -2,8 +2,6 @@ package com.hopcape.mobile.auth.api.security
 
 import android.util.Base64
 import javax.crypto.Cipher
-import javax.crypto.spec.GCMParameterSpec
-import kotlin.random.Random
 
 /**
  * A class responsible for encrypting data using the Android-specific encryption algorithms.
@@ -43,11 +41,16 @@ internal class AndroidEncryptor: Encryptor {
      */
     override fun encrypt(data: DecryptedData): EncryptedData {
         val cipher = Cipher.getInstance(ALGORITHM)
-        val iv = ByteArray(GCM_IV_LENGTH).also { Random.nextBytes(it) }
         val secretKey = getSecretKey()
 
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey, GCMParameterSpec(TAG_SIZE, iv))
+        // Initialize the cipher with the secret key. The IV will be generated internally.
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey)
+
+        // Encrypt the data
         val encryptedData = cipher.doFinal(data.toByteArray())
+
+        // Get the IV used during the encryption
+        val iv = cipher.iv
 
         // Combine IV and encrypted data for storage or transmission
         val combinedData = iv + encryptedData
