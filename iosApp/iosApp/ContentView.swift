@@ -1,19 +1,30 @@
 import UIKit
 import SwiftUI
-import ComposeApp
+import auth
 
-struct ComposeView: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UIViewController {
-        MainViewControllerKt.MainViewController()
-    }
-
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
-}
 
 struct ContentView: View {
     var body: some View {
-        ComposeView()
-                .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
+        VStack{
+            Text("Splash")
+                .onAppear {
+                    if let rootWindow = UIApplication.shared.windows.first {
+                        let authConfigBuilder: (AuthConfigBuilder) -> AuthConfig = { builder in
+                            builder.setAuthenticationFlowLauncher(authenticationFlowLauncher: IOSAuthenticationFlowLauncher(window: rootWindow))
+                            return builder.build()
+                        }
+                        let dependencyFactory = IOSPlatformAuthenticationDependencyFactory()
+                        let authenticator = AuthenticatorCompanion().create(factory: dependencyFactory)
+                        authenticator.configure(config: authConfigBuilder)
+                        authenticator.authenticate(onAuthenticationSuccess: {
+                            print("Authenticated...")
+                        }, onAuthenticationFailure: {
+                            print("Error while authentication")
+                        })
+                    }
+                    
+                }
+        }
     }
 }
 

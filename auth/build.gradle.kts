@@ -77,7 +77,7 @@ mavenPublishing {
     coordinates(
         groupId = "io.github.aumaidkh",
         artifactId = "mobile-auth",
-        version = "1.0.0-ALPHA_02"
+        version = "1.0.0-ALPHA_03"
     )
 
     pom{

@@ -1,5 +1,5 @@
 import SwiftUI
-
+import auth
 
 @main
 struct iOSApp: App {
@@ -8,4 +8,6 @@ struct iOSApp: App {
             ContentView()
         }
     }
+    
+    
 }
