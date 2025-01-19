@@ -1,6 +1,6 @@
 package com.hopcape.mobile.auth
 
-import AuthApp
+import com.hopcape.mobile.auth.presentation.ui.HopcapeMobileAuthApp
 import androidx.compose.ui.window.ComposeUIViewController
 
-fun MainViewController() = ComposeUIViewController { AuthApp() }
+fun MainViewController() = ComposeUIViewController { HopcapeMobileAuthApp() }
