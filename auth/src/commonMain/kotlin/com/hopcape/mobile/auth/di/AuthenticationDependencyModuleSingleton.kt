@@ -2,10 +2,14 @@ package com.hopcape.mobile.auth.di
 
 import com.hopcape.mobile.auth.api.authenticator.Authenticator
 import com.hopcape.mobile.auth.api.authprovider.methods.AuthenticationStrategyFactory
+import com.hopcape.mobile.auth.api.client.ApiClient
+import com.hopcape.mobile.auth.api.client.KtorHttpClient
 import com.hopcape.mobile.auth.api.security.Decryptor
 import com.hopcape.mobile.auth.api.security.Encryptor
 import com.hopcape.mobile.auth.api.session.SessionManager
 import com.hopcape.mobile.auth.api.storage.KeyValueStorage
+import com.hopcape.mobile.auth.data.remote.api.password.EmailPasswordAPI
+import com.hopcape.mobile.auth.data.repository.AuthRepository
 import kotlin.reflect.KClass
 
 /**
@@ -53,7 +57,10 @@ object AuthenticationDependencyModuleSingleton : AuthenticationDependencyModule 
                 AuthenticationStrategyFactory::class to createAuthenticationStrategyFactory(),
                 Encryptor::class to createEncryptor(),
                 Decryptor::class to createDecrpytor(),
-                KeyValueStorage::class to createStorage()
+                KeyValueStorage::class to createStorage(),
+                AuthRepository::class to createAuthRepository(),
+                ApiClient::class to createApiClient(),
+                EmailPasswordAPI::class to createEmailPasswordApi()
             )
         }
     }

@@ -30,6 +30,8 @@ lifecycleCommonJvm = "2.8.7"
 mokkery = "2.6.1"
 multiplatformSettings = "1.2.0"
 
+serialization = "1.7.3"
+
 turbine = "1.2.0"
 viewModel = "2.8.2"
 vaniktech = "0.28.0"
@@ -64,6 +66,7 @@ koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = 
 koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koinComposeViewModel"}
 
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref="serialization"}
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }

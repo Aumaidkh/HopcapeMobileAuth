@@ -47,6 +47,9 @@ kotlin {
             api(libs.datastore)
             api(libs.datastore.preferences)
 
+            implementation(libs.ktor.client.core)
+            implementation(libs.kotlinx.serialization)
+
             api(libs.multiplatform.settings.no.arg)
 
             implementation(compose.runtime)
@@ -58,6 +61,10 @@ kotlin {
             implementation(libs.lifecycle.viewmodel.compose)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
     }
 }

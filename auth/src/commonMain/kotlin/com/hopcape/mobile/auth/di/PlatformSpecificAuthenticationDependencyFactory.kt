@@ -4,12 +4,19 @@ import com.hopcape.mobile.auth.api.authenticator.Authenticator
 import com.hopcape.mobile.auth.api.authenticator.HopcapeMobileAuthenticator
 import com.hopcape.mobile.auth.api.authprovider.methods.AuthenticationStrategyFactory
 import com.hopcape.mobile.auth.api.authprovider.methods.AuthenticationStrategyFactoryImpl
+import com.hopcape.mobile.auth.api.client.ApiClient
+import com.hopcape.mobile.auth.api.client.KtorHttpClient
 import com.hopcape.mobile.auth.api.session.SessionManager
 import com.hopcape.mobile.auth.api.session.SessionManagerImpl
 import com.hopcape.mobile.auth.api.storage.KeyValueStorage
 import com.hopcape.mobile.auth.api.storage.LocalSettingsStorage
 import com.hopcape.mobile.auth.api.storage.SecureStorage
+import com.hopcape.mobile.auth.data.remote.api.password.EmailPasswordAPI
+import com.hopcape.mobile.auth.data.remote.api.password.EmailPasswordAPIImpl
+import com.hopcape.mobile.auth.data.repository.AuthRepository
+import com.hopcape.mobile.auth.data.repository.AuthRepositoryImpl
 import com.russhwolf.settings.Settings
+import io.ktor.client.HttpClient
 
 /**
  * Abstract class that provides platform-specific implementations for authentication dependencies.
@@ -80,5 +87,19 @@ abstract class PlatformSpecificAuthenticationDependencyFactory : AuthDependencyF
      */
     override fun createAuthenticationStrategyFactory(): AuthenticationStrategyFactory {
         return AuthenticationStrategyFactoryImpl()
+    }
+
+    override fun createApiClient(): ApiClient {
+        return KtorHttpClient(
+            httpClient = HttpClient()
+        )
+    }
+
+    override fun createAuthRepository(): AuthRepository {
+        return AuthRepositoryImpl(createEmailPasswordApi(),createSessionManager())
+    }
+
+    override fun createEmailPasswordApi(): EmailPasswordAPI {
+        return EmailPasswordAPIImpl(createApiClient())
     }
 }

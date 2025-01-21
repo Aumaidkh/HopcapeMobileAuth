@@ -2,10 +2,13 @@ package com.hopcape.mobile.auth.di
 
 import com.hopcape.mobile.auth.api.authenticator.Authenticator
 import com.hopcape.mobile.auth.api.authprovider.methods.AuthenticationStrategyFactory
+import com.hopcape.mobile.auth.api.client.ApiClient
 import com.hopcape.mobile.auth.api.security.Decryptor
 import com.hopcape.mobile.auth.api.security.Encryptor
 import com.hopcape.mobile.auth.api.session.SessionManager
 import com.hopcape.mobile.auth.api.storage.KeyValueStorage
+import com.hopcape.mobile.auth.data.remote.api.password.EmailPasswordAPI
+import com.hopcape.mobile.auth.data.repository.AuthRepository
 
 /**
  * Factory interface responsible for creating dependencies required for authentication in the mobile app.
@@ -66,4 +69,12 @@ interface AuthDependencyFactory {
      * @return A new [AuthenticationStrategyFactory] instance.
      */
     fun createAuthenticationStrategyFactory(): AuthenticationStrategyFactory
+
+
+    fun createApiClient(): ApiClient
+
+    fun createAuthRepository(): AuthRepository
+
+    fun createEmailPasswordApi(): EmailPasswordAPI
+
 }
