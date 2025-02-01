@@ -30,7 +30,9 @@ lifecycleCommonJvm = "2.8.7"
 mokkery = "2.6.1"
 multiplatformSettings = "1.2.0"
 
-serialization = "1.7.3"
+networkingClient = "1.0.0-ALPHA_02"
+serialization = "2.1.0"
+serializationJson = "1.7.3"
 
 turbine = "1.2.0"
 viewModel = "2.8.2"
@@ -66,9 +68,10 @@ koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = 
 koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koinComposeViewModel"}
 
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
-kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref="serialization"}
+kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref="serializationJson"}
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 
@@ -79,6 +82,7 @@ multiplatform-settings-no-arg = { module = "com.russhwolf:multiplatform-settings
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatformSettings"}
 
 ## Turbine
+networking-client = { module = "io.github.aumaidkh:networking-client", version.ref = "networkingClient" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
@@ -87,6 +91,7 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization"}
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
 vaniktechMavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "vaniktech" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka"}

@@ -10,6 +10,7 @@ plugins {
     `maven-publish`
     alias(libs.plugins.vaniktechMavenPublish)
     alias(libs.plugins.dokka)
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 kotlin {
@@ -43,11 +44,13 @@ kotlin {
             implementation(libs.coil.compose.core)
             implementation(libs.coil.compose)
             implementation(libs.coil.compose.svg)
+            implementation(libs.networking.client)
 
             api(libs.datastore)
             api(libs.datastore.preferences)
 
             implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.cio)
             implementation(libs.kotlinx.serialization)
 
             api(libs.multiplatform.settings.no.arg)

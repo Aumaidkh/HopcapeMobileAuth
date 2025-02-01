@@ -8,6 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.hopcape.mobile.auth.api.authprovider.credentials.AuthCredentials
+import com.hopcape.mobile.auth.api.authprovider.methods.AuthMethod
+import com.hopcape.mobile.auth.api.authprovider.methods.AuthenticationStrategyFactory
 import com.hopcape.mobile.auth.api.models.Email
 import com.hopcape.mobile.auth.api.models.Password
 import com.hopcape.mobile.auth.data.repository.AuthRepository
@@ -28,8 +31,8 @@ fun HopcapeMobileAuthApp(modifier: Modifier = Modifier) {
             onClick = {
                 scope.launch {
                     repository.login(
-                        email = Email("aubc@gmail.com"),
-                        password = Password("some Passowrd")
+                            email = Email("aubc@gmail.com"),
+                            password = Password("some Passowrd")
                     ).also {
                         when{
                             it.isSuccess -> {

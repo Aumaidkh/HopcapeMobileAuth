@@ -10,49 +10,75 @@ import com.hopcape.mobile.auth.di.AuthenticationDependencyModuleSingleton
  * Interface for handling authentication in the mobile authentication library.
  *
  * This interface provides methods for configuring the authenticator, initiating
- * authentication, and handling success or failure callbacks.
+ * authentication, and handling success or failure callbacks. It serves as the
+ * primary entry point for integrating authentication functionality into an application.
  *
- * #### Example usage in Android Kotlin:
+ * #### Key Features:
+ * - **Configuration**: Allows setting up authentication settings such as client ID,
+ *   authentication flow launcher, and API endpoints.
+ * - **Authentication Flow**: Initiates the authentication process and provides
+ *   callbacks for success and failure scenarios.
+ * - **Dependency Injection**: Supports dependency injection for modular and testable code.
+ *
+ * #### Example Usage in Android Kotlin:
  * ```kotlin
- * val authenticator: Authenticator = MyAuthenticator() // Replace with your authenticator implementation
+ * val authenticator: Authenticator = Authenticator.create(MyAuthDependencyFactory())
+ *
  * authenticator.configure {
  *     setClientId("your-client-id")
  *     setAuthenticationFlowLauncher(object : AuthenticationFlowLauncher {
  *         override fun launchAuthenticationFlow() {
- *             // Implement authentication launch logic here
+ *             println("Launching authentication flow...")
  *         }
  *     })
+ *     setEndPoints(
+ *         EndPoints(
+ *             loginEndpoint = Url("https://api.example.com/auth/login"),
+ *             registerEndpoint = Url("https://api.example.com/auth/register"),
+ *             requestOtpEndpoint = Url("https://api.example.com/auth/request-otp"),
+ *             verifyOtpEndpoint = Url("https://api.example.com/auth/verify-otp"),
+ *             googleLoginEndpoint = Url("https://api.example.com/auth/google-login"),
+ *             facebookLoginEndpoint = Url("https://api.example.com/auth/facebook-login")
+ *         )
+ *     )
  * }
  *
  * authenticator.authenticate(
  *     onAuthenticationSuccess = {
- *         // Handle success
  *         println("Authentication successful!")
  *     },
  *     onAuthenticationFailure = {
- *         // Handle failure
  *         println("Authentication failed!")
  *     }
  * )
  * ```
  *
- * #### Example usage in Swift:
+ * #### Example Usage in Swift:
  * ```swift
- * let authenticator: Authenticator = MyAuthenticator() // Replace with your authenticator implementation
+ * let authenticator: Authenticator = Authenticator.create(MyAuthDependencyFactory())
+ *
  * authenticator.configure { builder in
  *     builder.setClientId("your-client-id")
  *     builder.setAuthenticationFlowLauncher {
- *         // Implement authentication flow logic here
+ *         print("Launching authentication flow...")
  *     }
+ *     builder.setEndPoints(
+ *         EndPoints(
+ *             loginEndpoint: Url("https://api.example.com/auth/login"),
+ *             registerEndpoint: Url("https://api.example.com/auth/register"),
+ *             requestOtpEndpoint: Url("https://api.example.com/auth/request-otp"),
+ *             verifyOtpEndpoint: Url("https://api.example.com/auth/verify-otp"),
+ *             googleLoginEndpoint: Url("https://api.example.com/auth/google-login"),
+ *             facebookLoginEndpoint: Url("https://api.example.com/auth/facebook-login")
+ *         )
+ *     )
  * }
  *
  * authenticator.authenticate(
  *     onAuthenticationSuccess: {
- *         // Handle success
  *         print("Authentication successful!")
  *     },
  *     onAuthenticationFailure: {
- *         // Handle failure
  *         print("Authentication failed!")
  *     }
  * )
@@ -62,26 +88,41 @@ import com.hopcape.mobile.auth.di.AuthenticationDependencyModuleSingleton
  */
 interface Authenticator {
 
+    /**
+     * Companion object for the [Authenticator] interface.
+     *
+     * This object provides utility methods for creating and configuring the authenticator.
+     */
     companion object {
-        var config: AuthConfig? = null
+
+        /**
+         * The global configuration for the authenticator.
+         *
+         * This property holds the [AuthConfig] instance that defines the authentication settings.
+         * It must be initialized using the [configure] method before starting the authentication process.
+         *
+         * @throws UninitializedPropertyAccessException if accessed before being configured.
+         */
+        lateinit var config: AuthConfig
+            private set
 
         /**
          * Creates an instance of the [Authenticator] using the provided [AuthDependencyFactory].
          *
-         * This method sets up the dependency module and retrieves an [Authenticator]
-         * instance, ensuring the proper dependencies are injected.
+         * This method sets up the dependency module and retrieves an [Authenticator] instance,
+         * ensuring that all required dependencies are properly injected.
          *
          * @param factory The [AuthDependencyFactory] used for creating dependencies.
+         *                This factory is responsible for providing implementations for the
+         *                authentication components (e.g., network clients, storage).
          * @return The created [Authenticator] instance.
          *
-         * ## Example
+         * ##### Example:
          * ```kotlin
          * val authenticator: Authenticator = Authenticator.create(MyAuthDependencyFactory())
          * ```
          */
-        fun create(
-            factory: AuthDependencyFactory
-        ): Authenticator {
+        fun create(factory: AuthDependencyFactory): Authenticator {
             val dependencyModule: AuthenticationDependencyModule = AuthenticationDependencyModuleSingleton
             dependencyModule.setFactory(factory)
             return dependencyModule.get(Authenticator::class)
@@ -92,21 +133,35 @@ interface Authenticator {
      * Configures the authenticator with the specified authentication settings.
      *
      * This method allows building an [AuthConfig] object through a lambda function
-     * using [AuthConfigBuilder]. The configuration will be applied to the authenticator.
+     * using [AuthConfigBuilder]. The configuration will be applied to the authenticator
+     * and stored in the [config] property.
      *
      * @param config A lambda function that allows building an [AuthConfig] using [AuthConfigBuilder].
+     *               This function provides a fluent API for setting up authentication settings.
      *
-     * ## Example
+     * ##### Example:
      * ```kotlin
      * authenticator.configure {
      *     setClientId("your-client-id")
      *     setAuthenticationFlowLauncher(object : AuthenticationFlowLauncher {
      *         override fun launchAuthenticationFlow() {
-     *             // Implement authentication launch logic here
+     *             println("Launching authentication flow...")
      *         }
      *     })
+     *     setEndPoints(
+     *         EndPoints(
+     *             loginEndpoint = Url("https://api.example.com/auth/login"),
+     *             registerEndpoint = Url("https://api.example.com/auth/register"),
+     *             requestOtpEndpoint = Url("https://api.example.com/auth/request-otp"),
+     *             verifyOtpEndpoint = Url("https://api.example.com/auth/verify-otp"),
+     *             googleLoginEndpoint = Url("https://api.example.com/auth/google-login"),
+     *             facebookLoginEndpoint = Url("https://api.example.com/auth/facebook-login")
+     *         )
+     *     )
      * }
      * ```
+     *
+     * @throws IllegalStateException if called after authentication has started.
      */
     fun configure(config: AuthConfigBuilder.() -> AuthConfig)
 
@@ -114,24 +169,29 @@ interface Authenticator {
      * Initiates the authentication process.
      *
      * This method triggers the authentication flow and executes the appropriate
-     * callback based on the result.
+     * callback based on the result. The flow may involve user interaction (e.g.,
+     * entering credentials) or background operations (e.g., token validation).
      *
      * @param onAuthenticationSuccess A callback invoked when authentication is successful.
+     *                                This callback should handle post-authentication logic,
+     *                                such as navigating to a home screen or displaying a success message.
      * @param onAuthenticationFailure A callback invoked when authentication fails.
+     *                                This callback should handle error scenarios, such as displaying
+     *                                an error message or retrying the authentication process.
      *
-     * ## Example
+     * ##### Example:
      * ```kotlin
      * authenticator.authenticate(
      *     onAuthenticationSuccess = {
-     *         // Handle success
      *         println("Authentication successful!")
      *     },
      *     onAuthenticationFailure = {
-     *         // Handle failure
      *         println("Authentication failed!")
      *     }
      * )
      * ```
+     *
+     * @throws IllegalStateException if called before configuring the authenticator.
      */
     fun authenticate(
         onAuthenticationSuccess: () -> Unit,
