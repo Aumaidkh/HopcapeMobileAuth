@@ -104,7 +104,6 @@ interface Authenticator {
          * @throws UninitializedPropertyAccessException if accessed before being configured.
          */
         lateinit var config: AuthConfig
-            private set
 
         /**
          * Creates an instance of the [Authenticator] using the provided [AuthDependencyFactory].
@@ -165,36 +164,6 @@ interface Authenticator {
      */
     fun configure(config: AuthConfigBuilder.() -> AuthConfig)
 
-    /**
-     * Initiates the authentication process.
-     *
-     * This method triggers the authentication flow and executes the appropriate
-     * callback based on the result. The flow may involve user interaction (e.g.,
-     * entering credentials) or background operations (e.g., token validation).
-     *
-     * @param onAuthenticationSuccess A callback invoked when authentication is successful.
-     *                                This callback should handle post-authentication logic,
-     *                                such as navigating to a home screen or displaying a success message.
-     * @param onAuthenticationFailure A callback invoked when authentication fails.
-     *                                This callback should handle error scenarios, such as displaying
-     *                                an error message or retrying the authentication process.
-     *
-     * ##### Example:
-     * ```kotlin
-     * authenticator.authenticate(
-     *     onAuthenticationSuccess = {
-     *         println("Authentication successful!")
-     *     },
-     *     onAuthenticationFailure = {
-     *         println("Authentication failed!")
-     *     }
-     * )
-     * ```
-     *
-     * @throws IllegalStateException if called before configuring the authenticator.
-     */
-    fun authenticate(
-        onAuthenticationSuccess: () -> Unit,
-        onAuthenticationFailure: () -> Unit = {}
-    )
+
+    fun authenticate()
 }

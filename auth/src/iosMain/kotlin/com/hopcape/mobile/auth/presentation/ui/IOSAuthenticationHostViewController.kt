@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.ComposeUIViewController
+import androidx.navigation.compose.rememberNavController
 
 /**
  * A Compose UI ViewController that hosts the authentication app within an iOS environment.
@@ -31,9 +32,10 @@ internal val authenticationHostViewController = ComposeUIViewController(
         enforceStrictPlistSanityCheck = false
     }
 ){
+    val navController = rememberNavController()
     HopcapeMobileAuthApp(
         modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.Red)
+            .fillMaxSize(),
+        navController = navController
     )
 }

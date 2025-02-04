@@ -54,6 +54,7 @@ kotlin {
             implementation(libs.kotlinx.serialization)
 
             api(libs.multiplatform.settings.no.arg)
+            api(libs.navigation.compose)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -82,6 +83,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+}
+dependencies {
+    implementation(libs.androidx.material3.android)
 }
 mavenPublishing {
     coordinates(

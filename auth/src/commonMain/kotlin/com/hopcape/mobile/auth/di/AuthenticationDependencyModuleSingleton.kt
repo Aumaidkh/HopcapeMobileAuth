@@ -7,6 +7,7 @@ import com.hopcape.mobile.auth.api.security.Encryptor
 import com.hopcape.mobile.auth.api.session.SessionManager
 import com.hopcape.mobile.auth.api.storage.KeyValueStorage
 import com.hopcape.mobile.auth.data.repository.AuthRepository
+import com.hopcape.mobile.auth.presentation.screens.utils.ViewModelFactory
 import com.hopcape.networking.api.client.NetworkingClient
 import kotlin.reflect.KClass
 
@@ -76,7 +77,8 @@ object AuthenticationDependencyModuleSingleton : AuthenticationDependencyModule 
             Decryptor::class to factory.createDecrpytor(),
             KeyValueStorage::class to factory.createStorage(),
             AuthRepository::class to factory.createAuthRepository(),
-            NetworkingClient::class to factory.createNetworkingClient()
+            NetworkingClient::class to factory.createNetworkingClient(),
+            ViewModelFactory::class to factory.createGenericViewModelFactory()
         )
     }
 

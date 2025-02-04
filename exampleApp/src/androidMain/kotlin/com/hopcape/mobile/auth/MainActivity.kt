@@ -1,6 +1,5 @@
 package com.hopcape.mobile.auth
 
-import com.hopcape.mobile.auth.presentation.ui.HopcapeMobileAuthApp
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -8,7 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.hopcape.mobile.auth.api.authenticator.Authenticator
-import com.hopcape.mobile.auth.api.config.AuthConfigBuilder
+import com.hopcape.mobile.auth.api.content.Content
 import com.hopcape.mobile.auth.api.launcher.AndroidAuthenticationFlowLauncher
 import com.hopcape.mobile.auth.di.AndroidPlatformAuthenticationDependencyFactory
 
@@ -21,19 +20,18 @@ class MainActivity : ComponentActivity() {
         )
         
         authenticator.configure{
+            setOnAuthenticationSucceedListener {
+                Log.d(TAG, "onCreate: Authenticated")
+            }
+            setOnAuthenticationFailureListener {
+                Log.d(TAG, "onCreate: Failed")
+            }
             setAuthenticationFlowLauncher(AndroidAuthenticationFlowLauncher(this@MainActivity))
             build()
         }
         
         setContent {
-            authenticator.authenticate(
-                onAuthenticationSuccess = {
-                    Log.d(TAG, "onCreate: Authenticated")
-                },
-                onAuthenticationFailure = {
-                    Log.d(TAG, "onCreate: Authentication Failed")
-                }
-            )
+            authenticator.authenticate()
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.hopcape.mobile.auth.api.config
 
+import androidx.compose.material.MaterialTheme
+import com.hopcape.mobile.auth.api.content.Content
 import com.hopcape.mobile.auth.api.launcher.AuthenticationFlowLauncher
 
 /**
@@ -20,13 +22,17 @@ import com.hopcape.mobile.auth.api.launcher.AuthenticationFlowLauncher
  *         }
  *     },
  *     endPoints = EndPoints(
- *         loginEndpoint = Url("https://api.example.com/auth/login"),
- *         registerEndpoint = Url("https://api.example.com/auth/register"),
- *         requestOtpEndpoint = Url("https://api.example.com/auth/request-otp"),
- *         verifyOtpEndpoint = Url("https://api.example.com/auth/verify-otp"),
- *         googleLoginEndpoint = Url("https://api.example.com/auth/google-login"),
- *         facebookLoginEndpoint = Url("https://api.example.com/auth/facebook-login")
- *     )
+ *         loginEndpoint = URL("https://api.example.com/auth/login"),
+ *         registerEndpoint = URL("https://api.example.com/auth/register"),
+ *         requestOtpEndpoint = URL("https://api.example.com/auth/request-otp"),
+ *         verifyOtpEndpoint = URL("https://api.example.com/auth/verify-otp"),
+ *         googleLoginEndpoint = URL("https://api.example.com/auth/google-login"),
+ *         facebookLoginEndpoint = URL("https://api.example.com/auth/facebook-login")
+ *     ),
+ *     onAuthSuccess = { println("Authentication successful!") },
+ *     onAuthFailure = { error -> println("Authentication failed: ${error.message}") },
+ *     content = Content(title = "Welcome", description = "Please log in to continue."),
+ *     theme = MaterialTheme()
  * )
  *
  * // Accessing properties
@@ -46,8 +52,8 @@ data class AuthConfig(
      * authentication protocols.
      *
      * Example:
-     * ```
-     * "your-client-id"
+     * ```kotlin
+     * val clientId = "your-client-id"
      * ```
      */
     val clientId: String = "",
@@ -61,7 +67,7 @@ data class AuthConfig(
      *
      * Example:
      * ```kotlin
-     * object : AuthenticationFlowLauncher {
+     * val authenticationFlowLauncher = object : AuthenticationFlowLauncher {
      *     override fun launchAuthenticationFlow() {
      *         println("Launching authentication flow...")
      *     }
@@ -79,15 +85,79 @@ data class AuthConfig(
      *
      * Example:
      * ```kotlin
-     * EndPoints(
-     *     loginEndpoint = Url("https://api.example.com/auth/login"),
-     *     registerEndpoint = Url("https://api.example.com/auth/register"),
-     *     requestOtpEndpoint = Url("https://api.example.com/auth/request-otp"),
-     *     verifyOtpEndpoint = Url("https://api.example.com/auth/verify-otp"),
-     *     googleLoginEndpoint = Url("https://api.example.com/auth/google-login"),
-     *     facebookLoginEndpoint = Url("https://api.example.com/auth/facebook-login")
+     * val endPoints = EndPoints(
+     *     loginEndpoint = URL("https://api.example.com/auth/login"),
+     *     registerEndpoint = URL("https://api.example.com/auth/register"),
+     *     requestOtpEndpoint = URL("https://api.example.com/auth/request-otp"),
+     *     verifyOtpEndpoint = URL("https://api.example.com/auth/verify-otp"),
+     *     googleLoginEndpoint = URL("https://api.example.com/auth/google-login"),
+     *     facebookLoginEndpoint = URL("https://api.example.com/auth/facebook-login")
      * )
      * ```
      */
-    val endPoints: EndPoints
+    val endPoints: EndPoints,
+
+    /**
+     * A callback function invoked when authentication succeeds.
+     *
+     * This function is executed after a successful authentication attempt. It can be used to
+     * perform actions such as navigating to a new screen, displaying a success message, or
+     * updating the UI.
+     *
+     * Example:
+     * ```kotlin
+     * val onAuthSuccess = { println("Authentication successful!") }
+     * ```
+     */
+    val onAuthSuccess: () -> Unit = {},
+
+    /**
+     * A callback function invoked when authentication fails.
+     *
+     * This function is executed if an error occurs during the authentication process. It receives
+     * the exception that caused the failure, allowing you to handle errors gracefully (e.g., by
+     * logging the error or displaying an error message to the user).
+     *
+     * Example:
+     * ```kotlin
+     * val onAuthFailure = { error: Throwable ->
+     *     println("Authentication failed: ${error.message}")
+     * }
+     * ```
+     */
+    val onAuthFailure: ((Throwable) -> Unit)? = null,
+
+    /**
+     * The content configuration for the authentication UI.
+     *
+     * This property defines the textual content displayed on the authentication screens, such as
+     * titles, descriptions, or instructions. It allows for easy customization of the UI text.
+     *
+     * Example:
+     * ```kotlin
+     * val content = Content(
+     *     title = "Welcome",
+     *     description = "Please log in to continue."
+     * )
+     * ```
+     */
+    val content: Content,
+
+    /**
+     * The theme configuration for the authentication UI.
+     *
+     * This property defines the visual theme of the authentication screens, such as colors, fonts,
+     * and other styling elements. It uses Jetpack Compose's `MaterialTheme` to provide a consistent
+     * look and feel across the application.
+     *
+     * Example:
+     * ```kotlin
+     * val theme = MaterialTheme(
+     *     colors = lightColors(),
+     *     typography = Typography(),
+     *     shapes = Shapes()
+     * )
+     * ```
+     */
+    val theme: MaterialTheme
 )

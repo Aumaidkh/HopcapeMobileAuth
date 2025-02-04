@@ -75,44 +75,14 @@ internal class HopcapeMobileAuthenticator(
         Authenticator.config = config(AuthConfigBuilder())
     }
 
-    /**
-     * Initiates the authentication process.
-     *
-     * This method triggers the authentication flow. If the user is already authenticated (i.e., the session exists),
-     * the success callback is invoked immediately. If the authentication flow is not configured, an exception is thrown.
-     *
-     * Example:
-     * ```kotlin
-     * authenticator.authenticate(
-     *     onAuthenticationSuccess = {
-     *         // Handle successful authentication
-     *     },
-     *     onAuthenticationFailure = {
-     *         // Handle failed authentication
-     *     }
-     * )
-     * ```
-     *
-     * @param onAuthenticationSuccess A callback invoked when authentication is successful.
-     * @param onAuthenticationFailure A callback invoked when authentication fails. The default is no-op.
-     * @throws IllegalStateException If no authentication configuration is set before calling this method.
-     */
-    override fun authenticate(
-        onAuthenticationSuccess: () -> Unit,
-        onAuthenticationFailure: () -> Unit
-    ) {
-        // Check if configuration is set
-        if (Authenticator.config == null) {
-            throw IllegalStateException("No auth config set. Please make sure to call configure first.")
-        }
+    override fun authenticate() {
         // If the user is already authenticated, trigger success callback
         if (sessionManager.getCurrentSession() != null) {
-            onAuthenticationSuccess()
+            Authenticator.config.onAuthSuccess()
             return
         }
 
         // If no session and authentication flow is configured, launch authentication flow
-        Authenticator.config?.authenticationFlowLauncher?.launchAuthenticationFlow()
-            ?: throw IllegalStateException("No auth config set. Please make sure to call configure first.")
+        Authenticator.config.authenticationFlowLauncher.launchAuthenticationFlow()
     }
 }

@@ -11,6 +11,11 @@ import com.hopcape.mobile.auth.api.storage.LocalSettingsStorage
 import com.hopcape.mobile.auth.api.storage.SecureStorage
 import com.hopcape.mobile.auth.data.repository.AuthRepository
 import com.hopcape.mobile.auth.data.repository.AuthRepositoryImpl
+import com.hopcape.mobile.auth.domain.usecase.login.LoginResult
+import com.hopcape.mobile.auth.domain.usecase.login.LoginUseCase
+import com.hopcape.mobile.auth.domain.usecase.utils.SuspendUseCase
+import com.hopcape.mobile.auth.presentation.screens.login.LoginScreenViewModel
+import com.hopcape.mobile.auth.presentation.screens.utils.ViewModelFactory
 import com.hopcape.networking.api.client.NetworkingClient
 import com.hopcape.networking.api.config.Configuration
 import com.russhwolf.settings.Settings
@@ -219,5 +224,104 @@ abstract class PlatformSpecificAuthenticationDependencyFactory : AuthDependencyF
      */
     override fun createAuthRepository(): AuthRepository {
         return AuthRepositoryImpl(createAuthenticationStrategyFactory(), createSessionManager())
+    }
+
+    /**
+     * Creates a generic [ViewModelFactory] that can be used to instantiate [ViewModel] instances
+     * without requiring separate factories for each [ViewModel].
+     *
+     * This implementation registers factory functions for specific [ViewModel] types, such as
+     * [LoginScreenViewModel], and resolves their dependencies dynamically. It avoids the need for
+     * reflection or platform-specific features, making it suitable for Kotlin Multiplatform (KMP)
+     * projects.
+     *
+     * #### Key Features:
+     * - **Reusability**: A single factory instance can be used to create multiple [ViewModel] types.
+     * - **Manual Dependency Injection**: Dependencies are explicitly registered and resolved,
+     *   ensuring type safety and avoiding runtime errors.
+     * - **Cross-Platform Compatibility**: Works seamlessly in KMP projects without relying on JVM-specific
+     *   features like reflection.
+     *
+     * #### Example Usage:
+     * ```kotlin
+     * // Create the generic ViewModel factory
+     * val viewModelFactory = createGenericViewModelFactory()
+     *
+     * // Resolve ViewModels
+     * val loginViewModel = viewModelFactory.create<LoginScreenViewModel>()
+     *
+     * // Use the ViewModel in your app
+     * loginViewModel.onIntent(LoginScreenIntent.EmailChange("user@example.com"))
+     * ```
+     *
+     * @return A new instance of [ViewModelFactory] that can be used to create [ViewModel] instances
+     *         by registering their factory functions.
+     *
+     * @see ViewModelFactory
+     * @see LoginScreenViewModel
+     */
+    override fun createGenericViewModelFactory(): ViewModelFactory {
+        val viewModelFactory = ViewModelFactory()
+        viewModelFactory.register<LoginScreenViewModel> {
+            LoginScreenViewModel(
+                loginUseCase = LoginUseCase(createAuthRepository())
+            )
+        }
+        return viewModelFactory
+    }
+
+    /**
+     * Creates an instance of [SuspendUseCase] for handling the login functionality.
+     *
+     * This implementation provides a use case that encapsulates the business logic for authenticating users.
+     * It takes user credentials as input and returns the result of the authentication process, such as success,
+     * error, or validation failure. The use case relies on an [AuthRepository] to perform the actual login operation.
+     *
+     * #### Key Features:
+     * - **Encapsulation**: Encapsulates the login logic, ensuring separation of concerns between
+     *   the UI layer and the business logic.
+     * - **Asynchronous Execution**: The use case operates as a suspending function, making it suitable
+     *   for performing asynchronous operations like network requests or database queries.
+     * - **Type Safety**: Uses strongly-typed parameters ([LoginUseCase.Params]) and results ([LoginResult])
+     *   to ensure clarity and reduce runtime errors.
+     *
+     * #### Example Usage:
+     * ```kotlin
+     * // Create the login use case
+     * val loginUseCase = createLoginUseCase()
+     *
+     * // Invoke the use case with user credentials
+     * val result = runBlocking {
+     *     loginUseCase(
+     *         LoginUseCase.Params(
+     *             email = "user@example.com",
+     *             password = "securepassword123"
+     *         )
+     *     )
+     * }
+     *
+     * // Handle the result
+     * when (result) {
+     *     is LoginResult.Success -> println("Login successful!")
+     *     is LoginResult.Error -> println("Login failed: ${result.exception.message}")
+     *     is LoginResult.ValidationError -> {
+     *         println("Validation failed:")
+     *         if (result.emailError != null) println("Email Error: ${result.emailError}")
+     *         if (result.passwordError != null) println("Password Error: ${result.passwordError}")
+     *     }
+     * }
+     * ```
+     *
+     * @return A new instance of [SuspendUseCase] that handles the login functionality.
+     *
+     * @see SuspendUseCase
+     * @see LoginUseCase.Params
+     * @see LoginResult
+     * @see AuthRepository
+     */
+    override fun createLoginUseCase(): SuspendUseCase<LoginUseCase.Params, LoginResult> {
+        return LoginUseCase(
+            repository = createAuthRepository()
+        )
     }
 }
