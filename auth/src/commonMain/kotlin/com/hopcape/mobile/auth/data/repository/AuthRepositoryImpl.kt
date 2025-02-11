@@ -5,6 +5,7 @@ import com.hopcape.mobile.auth.api.authprovider.methods.AuthMethod
 import com.hopcape.mobile.auth.api.authprovider.methods.AuthenticationStrategyFactory
 import com.hopcape.mobile.auth.api.models.AuthenticatedUser
 import com.hopcape.mobile.auth.api.models.Email
+import com.hopcape.mobile.auth.api.models.FullName
 import com.hopcape.mobile.auth.api.models.IDToken
 import com.hopcape.mobile.auth.api.models.OTP
 import com.hopcape.mobile.auth.api.models.Password
@@ -74,7 +75,7 @@ internal class AuthRepositoryImpl(
     override suspend fun login(email: Email, password: Password): Result<AuthenticatedUser> {
         // Step 1: Authenticate the user using the strategy factory
         return strategyFactory.createStrategy(
-            method = AuthMethod.EMAIL_PASSWORD
+            method = AuthMethod.EMAIL_PASSWORD_SIGN_IN
         ).authenticate(
             credentials = AuthCredentials.EmailPassword(
                 email = email,
@@ -149,8 +150,20 @@ internal class AuthRepositoryImpl(
      *
      * @see AuthenticatedUser
      */
-    override suspend fun register(email: Email, password: Password): Result<AuthenticatedUser> {
-        TODO("Not yet implemented")
+    override suspend fun register(
+        fullName: FullName,
+        email: Email,
+        password: Password
+    ): Result<AuthenticatedUser> {
+        return strategyFactory.createStrategy(
+            method = AuthMethod.EMAIL_PASSWORD_SIGN_UP
+        ).authenticate(
+            credentials = AuthCredentials.EmailPasswordRegistration(
+                email = email,
+                password = password,
+                name = fullName
+            )
+        )
     }
 
     /**

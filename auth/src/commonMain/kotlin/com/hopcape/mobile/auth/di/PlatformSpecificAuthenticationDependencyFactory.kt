@@ -13,8 +13,11 @@ import com.hopcape.mobile.auth.data.repository.AuthRepository
 import com.hopcape.mobile.auth.data.repository.AuthRepositoryImpl
 import com.hopcape.mobile.auth.domain.usecase.login.LoginResult
 import com.hopcape.mobile.auth.domain.usecase.login.LoginUseCase
+import com.hopcape.mobile.auth.domain.usecase.register.RegisterResult
+import com.hopcape.mobile.auth.domain.usecase.register.RegisterUseCase
 import com.hopcape.mobile.auth.domain.usecase.utils.SuspendUseCase
 import com.hopcape.mobile.auth.presentation.screens.login.LoginScreenViewModel
+import com.hopcape.mobile.auth.presentation.screens.register.RegisterScreenViewModel
 import com.hopcape.mobile.auth.presentation.screens.utils.ViewModelFactory
 import com.hopcape.networking.api.client.NetworkingClient
 import com.hopcape.networking.api.config.Configuration
@@ -226,47 +229,61 @@ abstract class PlatformSpecificAuthenticationDependencyFactory : AuthDependencyF
         return AuthRepositoryImpl(createAuthenticationStrategyFactory(), createSessionManager())
     }
 
+
     /**
-     * Creates a generic [ViewModelFactory] that can be used to instantiate [ViewModel] instances
-     * without requiring separate factories for each [ViewModel].
+     * Creates a generic [ViewModelFactory] for registering and providing ViewModels.
      *
-     * This implementation registers factory functions for specific [ViewModel] types, such as
-     * [LoginScreenViewModel], and resolves their dependencies dynamically. It avoids the need for
-     * reflection or platform-specific features, making it suitable for Kotlin Multiplatform (KMP)
-     * projects.
+     * This function initializes a [ViewModelFactory] and registers all required ViewModels with their
+     * respective dependencies. It uses dependency injection to provide instances of UseCases and
+     * Repositories to the ViewModels. This approach ensures that ViewModels are created with the
+     * necessary dependencies and are reusable across the application.
      *
-     * #### Key Features:
-     * - **Reusability**: A single factory instance can be used to create multiple [ViewModel] types.
-     * - **Manual Dependency Injection**: Dependencies are explicitly registered and resolved,
-     *   ensuring type safety and avoiding runtime errors.
-     * - **Cross-Platform Compatibility**: Works seamlessly in KMP projects without relying on JVM-specific
-     *   features like reflection.
-     *
-     * #### Example Usage:
+     * Example usage:
      * ```kotlin
-     * // Create the generic ViewModel factory
      * val viewModelFactory = createGenericViewModelFactory()
+     * val loginViewModel: LoginScreenViewModel = viewModelFactory.create(LoginScreenViewModel::class)
+     * val registerViewModel: RegisterScreenViewModel = viewModelFactory.create(RegisterScreenViewModel::class)
      *
-     * // Resolve ViewModels
-     * val loginViewModel = viewModelFactory.create<LoginScreenViewModel>()
-     *
-     * // Use the ViewModel in your app
+     * // Use the ViewModels in your UI layer
      * loginViewModel.onIntent(LoginScreenIntent.EmailChange("user@example.com"))
+     * registerViewModel.onIntent(RegisterScreenIntent.FullNameChange("John Doe"))
      * ```
      *
-     * @return A new instance of [ViewModelFactory] that can be used to create [ViewModel] instances
-     *         by registering their factory functions.
-     *
-     * @see ViewModelFactory
-     * @see LoginScreenViewModel
+     * @return A [ViewModelFactory] instance configured with all registered ViewModels.
      */
     override fun createGenericViewModelFactory(): ViewModelFactory {
+        /**
+         * Initializes a new [ViewModelFactory] instance.
+         *
+         * This factory is responsible for creating ViewModels dynamically based on their class type.
+         * Each ViewModel is registered with its required dependencies, ensuring proper dependency injection.
+         */
         val viewModelFactory = ViewModelFactory()
+
+        /**
+         * Registers the [LoginScreenViewModel] with its dependencies.
+         *
+         * The [LoginScreenViewModel] requires a [LoginUseCase], which is initialized with an [AuthRepository].
+         * This ensures that the ViewModel has access to the necessary business logic and data sources.
+         */
         viewModelFactory.register<LoginScreenViewModel> {
             LoginScreenViewModel(
-                loginUseCase = LoginUseCase(createAuthRepository())
+                loginUseCase = createLoginUseCase()
             )
         }
+
+        /**
+         * Registers the [RegisterScreenViewModel] with its dependencies.
+         *
+         * The [RegisterScreenViewModel] requires a [RegisterUseCase], which is initialized with an [AuthRepository].
+         * This ensures that the ViewModel has access to the necessary business logic and data sources.
+         */
+        viewModelFactory.register<RegisterScreenViewModel> {
+            RegisterScreenViewModel(
+                useCase = createRegisterUseCase()
+            )
+        }
+
         return viewModelFactory
     }
 
@@ -324,4 +341,46 @@ abstract class PlatformSpecificAuthenticationDependencyFactory : AuthDependencyF
             repository = createAuthRepository()
         )
     }
+
+    /**
+     * Creates and provides an instance of [RegisterUseCase].
+     *
+     * This function initializes a [RegisterUseCase] with the required dependencies, such as an [AuthRepository].
+     * The [RegisterUseCase] is responsible for handling the registration process, including input validation
+     * and communication with the backend via the repository.
+     *
+     * Example usage:
+     * ```kotlin
+     * val registerUseCase = createRegisterUseCase()
+     * val result = runBlocking {
+     *     registerUseCase(
+     *         RegisterUseCase.Params(
+     *             fullName = "John Doe",
+     *             email = "john.doe@example.com",
+     *             password = "SecurePassword123!"
+     *         )
+     *     )
+     * }
+     * when (result) {
+     *     is RegisterResult.Success -> println("Registration succeeded: ${result.message}")
+     *     is RegisterResult.ValidationError -> println("Validation errors: ${result.emailError}, ${result.passwordError}")
+     *     is RegisterResult.Error -> println("Registration failed: ${result.errorMessage}")
+     * }
+     * ```
+     *
+     * @return An instance of [RegisterUseCase] configured with the necessary dependencies.
+     */
+    override fun createRegisterUseCase(): SuspendUseCase<RegisterUseCase.Params, RegisterResult> {
+        /**
+         * Initializes a new [RegisterUseCase] instance.
+         *
+         * The [RegisterUseCase] requires an [AuthRepository] to perform registration-related operations,
+         * such as validating user input and communicating with the backend API. This ensures that the
+         * use case has access to the necessary data sources and business logic.
+         */
+        return RegisterUseCase(
+            repository = createAuthRepository()
+        )
+    }
+
 }

@@ -1,12 +1,10 @@
 package com.hopcape.mobile.auth.presentation.screens.login
 
-import SocialLoginButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +19,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -36,7 +38,10 @@ import com.hopcape.m.auth.presentation.components.ProgressButton
 import com.hopcape.mobile.auth.api.content.LocalContent
 import com.hopcape.mobile.auth.api.content.LoginScreenContent
 import com.hopcape.mobile.auth.presentation.components.OutlinedInputField
+import com.hopcape.mobile.auth.presentation.components.SocialLoginProviders
+import com.hopcape.mobile.auth.presentation.screens.utils.DisplayState
 import com.hopcape.mobile.auth.presentation.screens.utils.emailFieldTestTag
+import com.hopcape.mobile.auth.presentation.screens.utils.forgotPasswordTestTag
 import com.hopcape.mobile.auth.presentation.screens.utils.headingImageTestTag
 import com.hopcape.mobile.auth.presentation.screens.utils.landingScreenTestTag
 import com.hopcape.mobile.auth.presentation.screens.utils.loginButtonTestTag
@@ -45,8 +50,8 @@ import com.hopcape.mobile.auth.presentation.screens.utils.registerButtonTestTag
 import com.hopcape.mobile.auth.presentation.theme.LocalUrbanistFontFamily
 import hopcapemobileauth.auth.generated.resources.Res
 import hopcapemobileauth.auth.generated.resources.at
-import hopcapemobileauth.auth.generated.resources.facebook_circle
-import hopcapemobileauth.auth.generated.resources.google
+import hopcapemobileauth.auth.generated.resources.ic_eye
+import hopcapemobileauth.auth.generated.resources.ic_eye_slash
 import hopcapemobileauth.auth.generated.resources.key
 import hopcapemobileauth.auth.generated.resources.logo
 import org.jetbrains.compose.resources.painterResource
@@ -90,6 +95,7 @@ internal fun LoginScreen(
     onIntent: (LoginScreenIntent) -> Unit,
     state: LoginScreenState = LoginScreenState()
 ) {
+    var showPassword by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
     val fontFamily = LocalUrbanistFontFamily.current
     with(content) {
@@ -172,13 +178,16 @@ internal fun LoginScreen(
                 endIcon = {
                     Icon(
                         modifier = Modifier
-                            .size(24.dp),
-                        painter = painterResource(Res.drawable.key),
+                            .size(24.dp)
+                            .clickable { showPassword = !showPassword }
+                        ,
+                        painter = painterResource(if (showPassword) Res.drawable.ic_eye_slash else Res.drawable.ic_eye),
                         contentDescription = "Password Icon"
                     )
                 },
                 errorMessage = state.passwordError,
-                isError = state.passwordError != null
+                isError = state.passwordError != null,
+                isPassword = !showPassword
             )
 
             // Forgot Password Button
@@ -191,6 +200,8 @@ internal fun LoginScreen(
                     onClick = {}
                 ) {
                     Text(
+                        modifier = Modifier
+                            .testTag(forgotPasswordTestTag),
                         fontFamily = fontFamily,
                         text = forgotPasswordButtonLabel,
                         style = TextStyle(
@@ -235,33 +246,12 @@ internal fun LoginScreen(
             )
 
             // Social Login Buttons
-            Row(
+            SocialLoginProviders(
+                googleLoginButtonLabel = googleLoginButtonLabel,
+                facebookLoginButtonLabel = facebookLoginButtonLabel,
                 modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                SocialLoginButton(
-                    modifier = Modifier
-                        .weight(1f),
-                    icon = Res.drawable.google,
-                    text = googleLoginButtonLabel,
-                    onClick = {},
-                    backgroundColor = MaterialTheme.colors.surface
-                )
-                Spacer(
-                    modifier = Modifier
-                        .weight(0.15f)
-                )
-                SocialLoginButton(
-                    modifier = Modifier
-                        .weight(1f),
-                    icon = Res.drawable.facebook_circle,
-                    text = facebookLoginButtonLabel,
-                    onClick = {},
-                    backgroundColor = MaterialTheme.colors.surface
-                )
-            }
+                    .fillMaxWidth()
+            )
         }
     }
 }

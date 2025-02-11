@@ -4,6 +4,7 @@ import com.hopcape.mobile.auth.api.models.Email
 import com.hopcape.mobile.auth.api.models.IDToken
 import com.hopcape.mobile.auth.api.models.Password
 import com.hopcape.mobile.auth.api.models.AuthenticatedUser
+import com.hopcape.mobile.auth.api.models.FullName
 import com.hopcape.mobile.auth.api.models.OTP
 import kotlinx.coroutines.flow.Flow
 
@@ -140,7 +141,7 @@ interface AuthRepository {
      *
      * @see AuthenticatedUser
      */
-    suspend fun register(email: Email, password: Password): Result<AuthenticatedUser>
+    suspend fun register(fullName: FullName, email: Email, password: Password): Result<AuthenticatedUser>
 
     /**
      * Sends a password reset request for the specified email address.

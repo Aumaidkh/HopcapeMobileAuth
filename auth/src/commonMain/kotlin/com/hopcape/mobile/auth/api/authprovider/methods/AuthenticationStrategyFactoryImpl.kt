@@ -5,6 +5,7 @@ import com.hopcape.mobile.auth.api.authprovider.strategy.AuthenticationStrategy
 import com.hopcape.mobile.auth.data.remote.strategies.email.EmailPasswordAuthenticationStrategy
 import com.hopcape.mobile.auth.api.authprovider.strategy.FacebookAuthenticationStrategy
 import com.hopcape.mobile.auth.api.authprovider.strategy.GoogleAuthenticationStrategy
+import com.hopcape.mobile.auth.data.remote.strategies.email.EmailPasswordRegistrationStrategy
 import com.hopcape.networking.api.client.NetworkingClient
 
 /**
@@ -52,7 +53,7 @@ class AuthenticationStrategyFactoryImpl(
      * - [GoogleAuthenticationStrategy] for [AuthMethod.GOOGLE]
      * - [FacebookAuthenticationStrategy] for [AuthMethod.FACEBOOK]
      * - [AppleAuthenticationStrategy] for [AuthMethod.APPLE]
-     * - [EmailPasswordAuthenticationStrategy] for [AuthMethod.EMAIL_PASSWORD]
+     * - [EmailPasswordAuthenticationStrategy] for [AuthMethod.EMAIL_PASSWORD_SIGN_IN]
      *
      * @param method The authentication method for which the strategy is to be created.
      * @return An instance of the appropriate [AuthenticationStrategy].
@@ -81,7 +82,10 @@ class AuthenticationStrategyFactoryImpl(
             AuthMethod.GOOGLE -> GoogleAuthenticationStrategy()
             AuthMethod.FACEBOOK -> FacebookAuthenticationStrategy()
             AuthMethod.APPLE -> AppleAuthenticationStrategy()
-            AuthMethod.EMAIL_PASSWORD -> EmailPasswordAuthenticationStrategy(
+            AuthMethod.EMAIL_PASSWORD_SIGN_IN -> EmailPasswordAuthenticationStrategy(
+                client = networkingClient
+            )
+            AuthMethod.EMAIL_PASSWORD_SIGN_UP -> EmailPasswordRegistrationStrategy(
                 client = networkingClient
             )
             else -> throw IllegalArgumentException("Unsupported authentication method: $method")

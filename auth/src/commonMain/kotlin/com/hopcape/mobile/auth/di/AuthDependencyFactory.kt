@@ -9,6 +9,8 @@ import com.hopcape.mobile.auth.api.storage.KeyValueStorage
 import com.hopcape.mobile.auth.data.repository.AuthRepository
 import com.hopcape.mobile.auth.domain.usecase.login.LoginResult
 import com.hopcape.mobile.auth.domain.usecase.login.LoginUseCase
+import com.hopcape.mobile.auth.domain.usecase.register.RegisterResult
+import com.hopcape.mobile.auth.domain.usecase.register.RegisterUseCase
 import com.hopcape.mobile.auth.domain.usecase.utils.SuspendUseCase
 import com.hopcape.mobile.auth.presentation.screens.utils.ViewModelFactory
 import com.hopcape.networking.api.client.NetworkingClient
@@ -333,4 +335,6 @@ interface AuthDependencyFactory {
      * @see LoginResult
      */
     fun createLoginUseCase(): SuspendUseCase<LoginUseCase.Params, LoginResult>
+
+    fun createRegisterUseCase(): SuspendUseCase<RegisterUseCase.Params, RegisterResult>
 }

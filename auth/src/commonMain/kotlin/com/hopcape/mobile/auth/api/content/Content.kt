@@ -68,5 +68,31 @@ data class Content(
      * )
      * ```
      */
-    val loginScreen: LoginScreenContent
+    val loginScreen: LoginScreenContent,
+    /**
+     * The content configuration for the register screen.
+     *
+     * This property encapsulates all the textual and visual elements required to display the
+     * register screen, such as headings, labels, placeholders, and button texts.
+     *
+     * Example:
+     * ```kotlin
+     * val registerScreenContent = LoginScreenContent(
+     *     headingImage = Res.drawable.logo,
+     *     heading = "Welcome to Our App",
+     *     emailLabel = "Email",
+     *     emailPlaceholder = "abc@gmail.com",
+     *     passwordLabel = "Password",
+     *     passwordPlaceholder = "********",
+     *     loginButtonLabel = "Login",
+     *     registerButtonLabel = "Register",
+     *     loginButtonSupporedText = "Already have an account?",
+     *     appName = "Hopcape",
+     *     dividerText = " -OR- ",
+     *     googleLoginButtonLabel = "Login with Google",
+     *     facebookLoginButtonLabel = "Login with Facebook"
+     * )
+     * ```
+     */
+    val registerScreen: RegisterScreenContent
 )

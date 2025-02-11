@@ -4,6 +4,7 @@ import androidx.compose.material.MaterialTheme
 import com.hopcape.mobile.auth.api.content.Content
 import com.hopcape.mobile.auth.api.content.resources.DefaultStringResourceProvider
 import com.hopcape.mobile.auth.api.content.LoginScreenContent
+import com.hopcape.mobile.auth.api.content.RegisterScreenContent
 import com.hopcape.mobile.auth.api.launcher.AuthenticationFlowLauncher
 import com.hopcape.networking.api.Url
 
@@ -67,7 +68,8 @@ class AuthConfigBuilder {
             facebookLoginEndpoint = Url("")
         ),
         content = Content(
-            loginScreen = LoginScreenContent(DefaultStringResourceProvider())
+            loginScreen = LoginScreenContent(DefaultStringResourceProvider()),
+            registerScreen = RegisterScreenContent(DefaultStringResourceProvider())
         ),
         theme = MaterialTheme,
         onAuthSuccess = {},
@@ -173,7 +175,7 @@ class AuthConfigBuilder {
      */
     fun setLoginScreenContent(content: LoginScreenContent) =
         apply {
-            config = config.copy(content = Content(loginScreen = content))
+            config = config.copy(content = config.content.copy(loginScreen = content))
         }
 
     /**

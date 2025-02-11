@@ -1,6 +1,7 @@
 package com.hopcape.mobile.auth.api.authprovider.credentials
 
 import com.hopcape.mobile.auth.api.models.Email
+import com.hopcape.mobile.auth.api.models.FullName
 import com.hopcape.mobile.auth.api.models.IDToken
 import com.hopcape.mobile.auth.api.models.Password
 
@@ -55,6 +56,9 @@ sealed interface AuthCredentials {
      * @param password The user's password.
      */
     data class EmailPassword(val email: Email, val password: Password) : AuthCredentials
+
+
+    data class EmailPasswordRegistration(val name: FullName, val email: Email, val password: Password) : AuthCredentials
 
     /**
      * Google authentication credentials.

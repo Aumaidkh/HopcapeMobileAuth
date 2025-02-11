@@ -10,5 +10,9 @@ const val registerButtonTestTag = "registerButton"
 const val forgotPasswordTestTag = "forgotPassword"
 const val headingImageTestTag = "headingImage"
 
+// Register Screen
+const val registerScreenTestTag = "registerScreenTestTag"
+const val fullNameFieldTestTag = "fullNameFieldTestTag"
+
 // Filled Button
 const val progressBar = "filledButtonProgressBar"
